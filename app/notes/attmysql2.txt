@@ -1,0 +1,272 @@
+
+-- Create a table to store exact check-in records
+CREATE TABLE CHECKEXACT (
+	EXACTID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each record
+	USERID INT NULL DEFAULT 0, -- Identifier for the user
+	CHECKTIME DATETIME NULL DEFAULT 0, -- Timestamp of the check
+	CHECKTYPE VARCHAR (2) NULL DEFAULT 0, -- Type of check (e.g., in/out)
+	ISADD SMALLINT NULL DEFAULT 0, -- Flag indicating if the record is added
+	YUYIN VARCHAR (25) NULL, -- Additional field for voice input
+	ISMODIFY SMALLINT NULL DEFAULT 0, -- Flag indicating if the record is modified
+	ISDELETE SMALLINT NULL DEFAULT 0, -- Flag indicating if the record is deleted
+	INCOUNT SMALLINT NULL DEFAULT 0, -- Count of entries
+	ISCOUNT SMALLINT NULL DEFAULT 0, -- Flag indicating if the count is valid
+	MODIFYBY VARCHAR (20) NULL, -- User who modified the record
+    DATE DATETIME NULL, -- Date of the record
+    CONSTRAINT EXACTID PRIMARY KEY (EXACTID) -- Primary key constraint
+);
+
+-- Create a table to store check-in and check-out records
+CREATE TABLE CHECKINOUT (
+	USERID INT NOT NULL, -- Identifier for the user
+	CHECKTIME DATETIME NOT NULL DEFAULT NOW(), -- Timestamp of the check
+	CHECKTYPE VARCHAR (1) NULL DEFAULT 'I', -- Type of check (I for in, O for out)
+	VERIFYCODE INT NULL DEFAULT 0, -- Verification code for the check
+	SENSORID VARCHAR (5) NULL, -- Identifier for the sensor used
+    CONSTRAINT USERCHECKTIME PRIMARY KEY (USERID, CHECKTIME) -- Composite primary key constraint
+);
+
+-- Create a table to store department information
+CREATE TABLE DEPARTMENTS (
+	DEPTID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each department
+	DEPTNAME VARCHAR (30) NULL, -- Name of the department
+	SUPDEPTID INT NOT NULL DEFAULT 1, -- Identifier for the parent department
+    CONSTRAINT DEPTID PRIMARY KEY (DEPTID) -- Primary key constraint
+);
+
+-- Create a table to store exception notes for users
+CREATE TABLE EXCNOTES (
+	USERID INT NULL, -- Identifier for the user
+	ATTDATE DATETIME NULL, -- Date of attendance
+	NOTES VARCHAR (200) NULL -- Notes regarding the exception
+);
+
+-- Create a table to store holiday information
+CREATE TABLE HOLIDAYS (
+	HOLIDAYID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each holiday
+	HOLIDAYNAME VARCHAR (20) NULL, -- Name of the holiday
+	HOLIDAYYEAR SMALLINT NULL, -- Year of the holiday
+	HOLIDAYMONTH SMALLINT NULL, -- Month of the holiday
+	HOLIDAYDAY SMALLINT NULL DEFAULT 1, -- Day of the holiday
+	STARTTIME DATETIME NULL, -- Start time of the holiday
+	DURATION SMALLINT NULL, -- Duration of the holiday
+	HOLIDAYTYPE SMALLINT NULL, -- Type of holiday
+	XINBIE VARCHAR (4) NULL, -- Additional field for classification
+	MINZU VARCHAR (50) NULL, -- Ethnic group associated with the holiday
+    CONSTRAINT HOLID PRIMARY KEY (HOLIDAYID) -- Primary key constraint
+);
+
+-- Create a table to store run numbers
+CREATE TABLE NUM_RUN (
+	NUM_RUNID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each run
+	OLDID INT NULL DEFAULT -1, -- Identifier for the previous run
+	NAME VARCHAR (30) NOT NULL, -- Name of the run
+	STARTDATE DATETIME NULL DEFAULT '1900-1-1', -- Start date of the run
+	ENDDATE DATETIME NULL DEFAULT '2099-12-31', -- End date of the run
+	CYLE SMALLINT NULL DEFAULT 1, -- Cycle of the run
+	UNITS SMALLINT NULL DEFAULT 1, -- Units associated with the run
+    CONSTRAINT NUMID PRIMARY KEY (NUM_RUNID) -- Primary key constraint
+);
+
+-- Create a table to store details of run numbers
+CREATE TABLE NUM_RUN_DEIL (
+	NUM_RUNID SMALLINT NOT NULL, -- Identifier for the run
+	STARTTIME DATETIME NOT NULL, -- Start time of the run
+	ENDTIME DATETIME NULL, -- End time of the run
+	SDAYS SMALLINT NOT NULL, -- Start days
+	EDAYS SMALLINT NOT NULL, -- End days
+    SCHCLASSID INT NULL DEFAULT -1, -- Identifier for the schedule class
+    CONSTRAINT NUMID2 PRIMARY KEY (NUM_RUNID, SDAYS, STARTTIME) -- Composite primary key constraint
+);
+
+-- Create a table to store security details
+CREATE TABLE SECURITYDETAILS (
+	SECURITYDETAILID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each security detail
+	USERID SMALLINT NULL, -- Identifier for the user
+	DEPTID SMALLINT NULL, -- Identifier for the department
+	SCHEDULE SMALLINT NULL, -- Schedule identifier
+	USERINFO SMALLINT NULL, -- User information identifier
+	ENROLLFINGERS SMALLINT NULL, -- Fingerprint enrollment status
+	REPORTVIEW SMALLINT NULL, -- Report view status
+	REPORT VARCHAR (10) NULL, -- Report type
+    CONSTRAINT NAMEID2 PRIMARY KEY (SECURITYDETAILID) -- Primary key constraint
+);
+
+-- Create a table to store shift information
+CREATE TABLE SHIFT (
+	SHIFTID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each shift
+	NAME VARCHAR (20) NULL, -- Name of the shift
+	USHIFTID INT NULL DEFAULT -1, -- Identifier for the user shift
+	STARTDATE DATETIME NOT NULL DEFAULT '1900-1-1', -- Start date of the shift
+	ENDDATE DATETIME NULL DEFAULT '1900-12-31', -- End date of the shift
+	RUNNUM SMALLINT NULL DEFAULT 0, -- Number of runs associated with the shift
+	SCH1 INT NULL DEFAULT 0, -- Schedule 1
+	SCH2 INT NULL DEFAULT 0, -- Schedule 2
+	SCH3 INT NULL DEFAULT 0, -- Schedule 3
+	SCH4 INT NULL DEFAULT 0, -- Schedule 4
+	SCH5 INT NULL DEFAULT 0, -- Schedule 5
+	SCH6 INT NULL DEFAULT 0, -- Schedule 6
+	SCH7 INT NULL DEFAULT 0, -- Schedule 7
+	SCH8 INT NULL DEFAULT 0, -- Schedule 8
+	SCH9 INT NULL DEFAULT 0, -- Schedule 9
+	SCH10 INT NULL DEFAULT 0, -- Schedule 10
+	SCH11 INT NULL DEFAULT 0, -- Schedule 11
+	SCH12 INT NULL DEFAULT 0, -- Schedule 12
+	CYCLE SMALLINT NULL DEFAULT 0, -- Cycle of the shift
+	UNITS SMALLINT NULL DEFAULT 0, -- Units associated with the shift
+    CONSTRAINT SHIFTS PRIMARY KEY (SHIFTID) -- Primary key constraint
+);
+
+-- Create a table to store user templates
+CREATE TABLE TEMPLATE (
+	TEMPLATEID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each template
+	USERID INT NOT NULL, -- Identifier for the user
+	FINGERID INT NOT NULL, -- Identifier for the fingerprint
+	TEMPLATE BLOB NOT NULL, -- Binary data for the template
+	TEMPLATE2 BLOB NULL, -- Additional template data
+	TEMPLATE3 BLOB NULL, -- Additional template data
+	BITMAPPICTURE BLOB NULL, -- Bitmap picture data
+	BITMAPPICTURE2 BLOB NULL, -- Additional bitmap picture data
+	BITMAPPICTURE3 BLOB NULL, -- Additional bitmap picture data
+	BITMAPPICTURE4 BLOB NULL, -- Additional bitmap picture data
+	USETYPE SMALLINT NULL, -- Type of use for the template
+    CONSTRAINT TEMPLATED PRIMARY KEY (TEMPLATEID) -- Primary key constraint
+);
+
+-- Create a table to associate users with run numbers
+CREATE TABLE USER_OF_RUN (
+	USERID INT NOT NULL, -- Identifier for the user
+	NUM_OF_RUN_ID INT NOT NULL, -- Identifier for the run number
+	STARTDATE DATETIME NOT NULL DEFAULT '1900-1-1', -- Start date of the association
+	ENDDATE DATETIME NOT NULL DEFAULT '2099-12-31', -- End date of the association
+	ISNOTOF_RUN INT NULL DEFAULT 0, -- Flag indicating if the user is not part of the run
+	ORDER_RUN INT NULL, -- Order of the run
+    CONSTRAINT USER_ST_NUM PRIMARY KEY (USERID, NUM_OF_RUN_ID, STARTDATE, ENDDATE) -- Composite primary key constraint
+);
+
+-- Create a table to store special day information for users
+CREATE TABLE USER_SPEDAY (
+	USERID INT NOT NULL, -- Identifier for the user
+	STARTSPECDAY DATETIME NOT NULL DEFAULT '1900-1-1', -- Start date of the special day
+	ENDSPECDAY DATETIME NULL DEFAULT '2099-12-31', -- End date of the special day
+	DATEID SMALLINT NOT NULL DEFAULT -1, -- Identifier for the date
+	YUANYING VARCHAR (200) NULL, -- Reason for the special day
+	DATE DATETIME NULL, -- Date of the special day
+    CONSTRAINT USER_SEP PRIMARY KEY (USERID, STARTSPECDAY, DATEID) -- Composite primary key constraint
+);
+
+-- Create a table to store temporary schedules for users
+CREATE TABLE USER_TEMP_SCH (
+	USERID INT NOT NULL, -- Identifier for the user
+	COMETIME DATETIME NOT NULL, -- Time of arrival
+	LEAVETIME DATETIME NOT NULL, -- Time of departure
+	OVERTIME INT NOT NULL DEFAULT 0, -- Overtime hours
+	TYPE SMALLINT NULL DEFAULT 0, -- Type of schedule
+	FLAG SMALLINT NULL DEFAULT 1, -- Flag indicating the status
+    SCHCLASSID INT NULL DEFAULT -1, -- Identifier for the schedule class
+    CONSTRAINT USER_TEMP PRIMARY KEY (USERID, COMETIME, LEAVETIME) -- Composite primary key constraint
+);
+
+-- Create a table to store user information
+CREATE TABLE USERINFO (
+	USERID INT AUTO_INCREMENT NOT NULL, -- Unique identifier for each user
+	BADGENUMBER VARCHAR (12) NOT NULL, -- Badge number of the user
+	SSN VARCHAR (20) NULL, -- Social Security Number
+	NAME VARCHAR (20) NULL, -- Name of the user
+	GENDER VARCHAR (2) NULL, -- Gender of the user
+	TITLE VARCHAR (20) NULL, -- Job title of the user
+	PAGER VARCHAR (20) NULL, -- Pager number
+	BIRTHDAY DATETIME NULL, -- Birthday of the user
+	HIREDDAY DATETIME NULL, -- Date of hiring
+	STREET VARCHAR (40) NULL, -- Street address
+	CITY VARCHAR (2) NULL, -- City of residence
+	STATE VARCHAR (2) NULL, -- State of residence
+	ZIP VARCHAR (12) NULL, -- Zip code
+	OPHONE VARCHAR (20) NULL, -- Office phone number
+	FPHONE VARCHAR (20) NULL, -- Home phone number
+	VERIFICATIONMETHOD SMALLINT NULL, -- Method of verification
+	DEFAULTDEPTID SMALLINT NULL DEFAULT 1, -- Default department identifier
+	SECURITYFLAGS SMALLINT NULL, -- Security flags
+	ATT SMALLINT NOT NULL DEFAULT 1, -- Attendance flag
+	INLATE SMALLINT NOT NULL DEFAULT 1, -- Late arrival flag
+	OUTEARLY SMALLINT NOT NULL DEFAULT 1, -- Early departure flag
+	OVERTIME SMALLINT NOT NULL DEFAULT 1, -- Overtime flag
+	SEP SMALLINT NOT NULL DEFAULT 1, -- Separation flag
+	HOLIDAY SMALLINT NOT NULL DEFAULT 1, -- Holiday flag
+	MINZU VARCHAR (8) NULL, -- Ethnic group
+	PASSWORD VARCHAR (20) NULL, -- User password
+	LUNCHDURATION SMALLINT NOT NULL DEFAULT 1, -- Duration of lunch
+	MVerifyPass VARCHAR(10) NULL, -- Verification password
+	PHOTO BLOB NULL, -- User photo
+	CONSTRAINT USERIDS PRIMARY KEY (USERID) -- Primary key constraint
+);
+
+-- Create unique index for user fingerprints
+CREATE UNIQUE INDEX USERFINGER ON TEMPLATE(USERID, FINGERID);
+
+-- Create unique index for holiday names
+CREATE UNIQUE INDEX HOLIDAYNAME ON HOLIDAYS(HOLIDAYNAME);
+
+-- Create index for department names
+CREATE INDEX DEPTNAME ON DEPARTMENTS(DEPTNAME);
+
+-- Create unique index for exception notes
+CREATE UNIQUE INDEX EXCNOTE ON EXCNOTES(USERID, ATTDATE);
+
+-- Create unique index for badge numbers
+CREATE UNIQUE INDEX BADGENUMBER ON USERINFO(BADGENUMBER);
+
+-- Create a table to store leave class information
+Create Table LeaveClass(
+  LeaveId INT AUTO_INCREMENT not null primary key, -- Unique identifier for each leave class
+  LeaveName VARCHAR(20) not null, -- Name of the leave class
+  MinUnit float not null default 1, -- Minimum unit of leave
+  Unit smallint not null default 1, -- Unit of leave
+  RemaindProc smallint not null default 1, -- Remaining procedure
+  RemaindCount smallint not null default 1, -- Remaining count
+  ReportSymbol varchar(4) not null default '-', -- Symbol for reporting
+  Deduct float not null default 0, -- Deduction amount
+  Color int not null default 0, -- Color code for the leave class
+  Classify SMALLINT NOT null default 0 -- Classification of the leave class
+);
+
+-- Create a table to store additional leave class information
+Create Table LeaveClass1 (
+  LeaveId INT AUTO_INCREMENT not null primary key, -- Unique identifier for each leave class
+  LeaveName VARCHAR(20) not null, -- Name of the leave class
+  MinUnit float not null default 1, -- Minimum unit of leave
+  Unit smallint not null default 0, -- Unit of leave
+  RemaindProc smallint not null default 2, -- Remaining procedure
+  RemaindCount smallint not null default 1, -- Remaining count
+  ReportSymbol varchar(4) not null default '-', -- Symbol for reporting
+  Deduct float not null default 0, -- Deduction amount
+  LeaveType SMALLINT not null default 0, -- Type of leave
+  Color int not null default 0, -- Color code for the leave class
+  Classify SMALLINT not null default 0, -- Classification of the leave class
+  Calc text null -- Calculation details
+);
+
+-- Create a table to store schedule class information
+CREATE TABLE SchClass (
+  schClassid INT AUTO_INCREMENT NOT NULL PRIMARY KEY, -- Unique identifier for each schedule class
+  schName VARCHAR(20) NOT null, -- Name of the schedule class
+  StartTime datetime NOT NULL, -- Start time of the schedule
+  EndTime datetime NOT NULL, -- End time of the schedule
+  LateMinutes int null, -- Late minutes allowed
+  EarlyMinutes int null, -- Early minutes allowed
+  CheckIn int null default 1, -- Check-in status
+  CheckOut int null default 1, -- Check-out status
+  CheckInTime1 datetime NULL, -- First check-in time
+  CheckInTime2 datetime NULL, -- Second check-in time
+  CheckOutTime1 datetime NULL, -- First check-out time
+  CheckOutTime2 datetime NULL, -- Second check-out time
+  Color Int NULL default 16715535, -- Color code for the schedule class
+  AutoBind SMALLINT NULL DEFAULT 1 -- Auto-bind status
+);
+
+-- Create a table to store attendance parameters
+Create Table AttParam(
+  PARANAME VARCHAR (20) NOT NULL Primary key, -- Name of the parameter
+  PARATYPE VARCHAR (2) NULL, -- Type of the parameter
+  PARAVALUE VARCHAR(100) NOT NULL -- Value of the parameter
+);

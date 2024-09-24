@@ -1,0 +1,165 @@
+CREATE TABLE `check_exact` (
+    `exact_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT DEFAULT 0,
+    `check_time` DATETIME,
+    `check_type` VARCHAR(2),
+    `is_add` SMALLINT DEFAULT 0,
+    `yuyin` VARCHAR(25),
+    `is_modify` SMALLINT DEFAULT 0,
+    `is_delete` SMALLINT DEFAULT 0,
+    `in_count` SMALLINT DEFAULT 0,
+    `is_count` SMALLINT DEFAULT 0,
+    `modify_by` VARCHAR(20),
+    `date` DATETIME,
+    FOREIGN KEY (`user_id`) REFERENCES `userinfo` (`userid`)
+);
+
+CREATE TABLE `exc_notes` (
+    `user_id` INT,
+    `att_date` DATETIME,
+    `notes` VARCHAR(200),
+    UNIQUE (`user_id`, `att_date`),
+    FOREIGN KEY (`user_id`) REFERENCES `userinfo` (`userid`)
+);
+
+CREATE TABLE `holidays` (
+    `holiday_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `holiday_name` VARCHAR(20) NOT NULL UNIQUE,
+    `holiday_year` SMALLINT,
+    `holiday_month` SMALLINT,
+    `holiday_day` SMALLINT DEFAULT 1,
+    `start_time` DATETIME,
+    `duration` SMALLINT,
+    `holiday_type` SMALLINT,
+    `xin_bie` VARCHAR(4),
+    `min_zu` VARCHAR(50)
+);
+
+CREATE TABLE `num_run` (
+    `num_run_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `old_id` INT DEFAULT -1,
+    `name` VARCHAR(30) NOT NULL,
+    `start_date` DATETIME DEFAULT '1900-01-01',
+    `end_date` DATETIME DEFAULT '2099-12-31',
+    `cycle` SMALLINT DEFAULT 1,
+    `units` SMALLINT DEFAULT 1
+);
+
+CREATE TABLE `num_run_detail` (
+    `num_run_id` SMALLINT NOT NULL,
+    `start_time` DATETIME NOT NULL,
+    `end_time` DATETIME,
+    `s_days` SMALLINT NOT NULL,
+    `e_days` SMALLINT NOT NULL,
+    `sch_class_id` INT DEFAULT -1,
+    PRIMARY KEY (`num_run_id`, `s_days`, `start_time`)
+);
+
+CREATE TABLE `security_details` (
+    `security_detail_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT,  
+    `dept_id` SMALLINT,
+    `schedule` SMALLINT,
+    `user_info` SMALLINT,
+    `enroll_fingers` SMALLINT,
+    `report_view` SMALLINT,
+    `report` VARCHAR(10),
+    FOREIGN KEY (`user_id`) REFERENCES `userinfo` (`userid`)
+);
+
+
+CREATE TABLE `shift` (
+    `shift_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(20) NOT NULL,
+    `ushift_id` INT DEFAULT -1,
+    `start_date` DATETIME DEFAULT '1900-01-01',
+    `end_date` DATETIME DEFAULT '1900-12-31',
+    `run_num` SMALLINT DEFAULT 0,
+    `cycle` SMALLINT DEFAULT 0,
+    `units` SMALLINT DEFAULT 0
+);
+
+CREATE TABLE `user_of_run` (
+    `user_id` INT NOT NULL,
+    `num_of_run_id` INT NOT NULL,
+    `start_date` DATETIME NOT NULL DEFAULT '1900-01-01',
+    `end_date` DATETIME NOT NULL DEFAULT '2099-12-31',
+    `is_not_of_run` INT DEFAULT 0,
+    `order_run` INT,
+    PRIMARY KEY (`user_id`, `num_of_run_id`, `start_date`, `end_date`),
+    FOREIGN KEY (`user_id`) REFERENCES `userinfo` (`userid`)
+);
+
+CREATE TABLE `user_spec_day` (
+    `user_id` INT NOT NULL,
+    `start_spec_day` DATETIME NOT NULL DEFAULT '1900-01-01',
+    `end_spec_day` DATETIME DEFAULT '2099-12-31',
+    `date_id` SMALLINT NOT NULL DEFAULT -1,
+    `yuanying` VARCHAR(200),
+    `date` DATETIME,
+    PRIMARY KEY (`user_id`, `start_spec_day`, `date_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `userinfo` (`userid`)
+);
+
+CREATE TABLE `user_temp_sch` (
+    `user_id` INT NOT NULL,
+    `come_time` DATETIME NOT NULL,
+    `leave_time` DATETIME NOT NULL,
+    `overtime` INT DEFAULT 0,
+    `type` SMALLINT DEFAULT 0,
+    `flag` SMALLINT DEFAULT 1,
+    `sch_class_id` INT DEFAULT -1,
+    PRIMARY KEY (`user_id`, `come_time`, `leave_time`),
+    FOREIGN KEY (`user_id`) REFERENCES `userinfo` (`userid`)
+);
+
+CREATE TABLE `leave_class` (
+    `leave_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `leave_name` VARCHAR(20) NOT NULL,
+    `min_unit` FLOAT DEFAULT 1 NOT NULL,
+    `unit` SMALLINT DEFAULT 1 NOT NULL,
+    `remaind_proc` SMALLINT DEFAULT 1 NOT NULL,
+    `remaind_count` SMALLINT DEFAULT 1 NOT NULL,
+    `report_symbol` VARCHAR(4) DEFAULT '-' NOT NULL,
+    `deduct` FLOAT DEFAULT 0 NOT NULL,
+    `color` INT DEFAULT 0 NOT NULL,
+    `classify` SMALLINT DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE `leave_class1` (
+    `leave_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `leave_name` VARCHAR(20) NOT NULL,
+    `min_unit` FLOAT DEFAULT 1 NOT NULL,
+    `unit` SMALLINT DEFAULT 0 NOT NULL,
+    `remaind_proc` SMALLINT DEFAULT 2 NOT NULL,
+    `remaind_count` SMALLINT DEFAULT 1 NOT NULL,
+    `report_symbol` VARCHAR(4) DEFAULT '-' NOT NULL,
+    `deduct` FLOAT DEFAULT 0 NOT NULL,
+    `leave_type` SMALLINT DEFAULT 0 NOT NULL,
+    `color` INT DEFAULT 0 NOT NULL,
+    `classify` SMALLINT DEFAULT 0 NOT NULL,
+    `calc` TEXT
+);
+
+CREATE TABLE `sch_class` (
+    `sch_class_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `sch_name` VARCHAR(20) NOT NULL,
+    `start_time` DATETIME NOT NULL,
+    `end_time` DATETIME NOT NULL,
+    `late_minutes` INT,
+    `early_minutes` INT,
+    `check_in` INT DEFAULT 1,
+    `check_out` INT DEFAULT 1,
+    `check_in_time1` DATETIME,
+    `check_in_time2` DATETIME,
+    `check_out_time1` DATETIME,
+    `check_out_time2` DATETIME,
+    `color` INT DEFAULT 16715535,
+    `auto_bind` SMALLINT DEFAULT 1
+);
+
+CREATE TABLE `att_param` (
+    `param_name` VARCHAR(20) PRIMARY KEY,
+    `param_type` VARCHAR(2),
+    `param_value` VARCHAR(100) NOT NULL
+);
